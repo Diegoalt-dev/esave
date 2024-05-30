@@ -24,6 +24,10 @@ func CreateSpentHandler(c *gin.Context) {
 	return
 }
 
+func LandingHandler(c *gin.Context) {
+	c.String(http.StatusOK, "Wellcome to esave")
+}
+
 func GetSpentByIdHandler(c *gin.Context) {
 	id := c.Param("id")
 	uintId, _ := strconv.ParseUint(id, 10, 64)
@@ -55,6 +59,7 @@ func SetupRouter() *gin.Engine {
 
 	// Rutas y manejadores
 	router.GET("/ping", PingHandler)
+	router.GET("/", LandingHandler)
 	router.POST("/spent/create", CreateSpentHandler)
 	router.GET("/spent/:id", GetSpentByIdHandler)
 	router.DELETE("/spent/:id", DeleteSpentByIdHandler)
