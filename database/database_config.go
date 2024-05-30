@@ -2,9 +2,11 @@ package database
 
 import (
 	"esave/database/models"
-	"gorm.io/driver/mysql"
+	"fmt"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
+	"os"
 	"sync"
 	"time"
 )
@@ -14,16 +16,37 @@ var (
 	once sync.Once
 )
 
+type DbConfig struct {
+	Host     string
+	Port     string
+	User     string
+	Password string
+	Database string
+}
+
+func getDbConfig() *DbConfig {
+	return &DbConfig{
+		Host:     os.Getenv("DB_HOST"),
+		Port:     os.Getenv("DB_PORT"),
+		User:     os.Getenv("DB_USER"),
+		Password: os.Getenv("DB_PASSWORD"),
+		Database: os.Getenv("DB_NAME"),
+	}
+}
+
 func GetDb() *gorm.DB {
 	return db
 }
 
 func InitializeDatabase() {
 	once.Do(func() {
+		config := getDbConfig()
+		dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Shanghai", config.Host, config.User, config.Password, config.Database, config.Port)
+		db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 		log.Println("initializing database...")
-		var err error
-		dns := "root:rootroot@tcp(localhost:3308)/esave_db?charset=utf8mb4&parseTime=True&loc=Local"
-		db, err = gorm.Open(mysql.Open(dns), &gorm.Config{})
+		//dns := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", config.User, config.Password, config.Host, config.Port, config.Database)
+		//db, err = gorm.Open(mysql.Open(dns), &gorm.Config{})
+
 		if err != nil {
 			log.Fatalf("failed to connect database: %v", err)
 		}
