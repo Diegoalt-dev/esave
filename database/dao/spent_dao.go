@@ -10,7 +10,7 @@ type SpentDaoImpl struct {
 }
 
 func (dao SpentDaoImpl) CreateSpent(dto services.SpentDto) {
-	spent := models.Spent{ID: dto.ID, Description: dto.Description, User: dto.User, Value: dto.Value}
+	spent := models.Spent{Description: dto.Description, User: dto.User, Value: dto.Value}
 	db := database.GetDb()
 	db.Create(&spent)
 }
