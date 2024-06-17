@@ -4,14 +4,18 @@ import (
 	"esave/database"
 	"esave/database/models"
 	services "esave/services/dtos"
+	"log"
 )
 
 type SpentDaoImpl struct {
 }
 
 func (dao SpentDaoImpl) CreateSpent(dto services.SpentDto) {
+	log.Printf("Creating spent: %v", dto)
 	spent := models.Spent{Description: dto.Description, User: dto.User, Value: dto.Value}
+	log.Printf("Spent created: %v", spent)
 	db := database.GetDb()
+	log.Println("Saving spent...")
 	db.Create(&spent)
 }
 
