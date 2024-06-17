@@ -3,6 +3,7 @@ package router
 import (
 	"esave/database/dao"
 	services "esave/services/dtos"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -56,6 +57,14 @@ func SetupRouter() *gin.Engine {
 	// Crear una instancia de Gin
 	log.Println("Starting router...")
 	router := gin.Default()
+
+	router.Use(cors.New(cors.Config{
+		AllowAllOrigins:  true,                                                // Dominios permitidos
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}, // Métodos permitidos
+		AllowHeaders:     []string{"Content-Type"},                            // Cabeceras permitidas
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+	}))
 
 	// Rutas y manejadores
 	router.GET("/ping", PingHandler)
